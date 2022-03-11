@@ -15,7 +15,6 @@ class Usuario(AbstractUser):
 
 class HistoriaClinica(models.Model):
     motivo_de_consulta = models.TextField(null = False, blank = False)
-    peo = models.TextField(null = False, blank = False)
     enfermedad_actual = models.TextField(null = False, blank=False)
     antecedentes_morbidos = models.TextField(null = False, blank = False)
     antecedentes_ginecoobstétricos = models.TextField(null = False, blank = False)
