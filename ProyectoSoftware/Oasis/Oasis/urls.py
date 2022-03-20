@@ -22,5 +22,6 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', backendViews.home),
-    path('historias/', backendViews.tabla_historias)
+    path('historias/', backendViews.tabla_historias),
+    path('historias/<int:ID>', backendViews.historia, name="historia_details")
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

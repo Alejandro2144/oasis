@@ -1,27 +1,28 @@
 {% extends "home.html" %}
 {% block content %}
-<table class="table">
-    <thead>
-      <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Nombre</th>
-        <th scope="col">Tipo</th>
-        <th scope="col">No. Afiliación</th>
-        <th scope="col">Aseguradora</th>
-        <th scope="col">Motivo de consulta</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for historia in historias %}
-      <tr>
-        <th scope="row">{{ historia.pk }}</th>
-        <td>{{ historia.nombre }}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>{{ historia.motivo_de_consulta }}</td>
-      </tr>
-      {% endfor %}
-</table>
+<div class="container">
+  <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">No. Afiliación</th>
+          <th scope="col">Aseguradora</th>
+          <th scope="col">Motivo de consulta</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for historia in historias %}
+        <tr>
+          <th scope="row">{{ historia.pk }}</th>
+          <td>{{ historia.paciente.nombre }}</td>
+          <td>{{ historia.paciente.tipoAfilliacion }}</td>
+          <td>{{ historia.paciente.noAfiliacion }}</td>
+          <td>{{ historia.paciente.aseguradora }}</td>
+          <td>{{ historia.motivo_de_consulta }}</td>
+        </tr>
+        {% endfor %}
+  </table>
+</div>
 {% endblock content %}

@@ -29,7 +29,7 @@ class InformacionPaciente(models.Model):
     aseguradora = models.CharField(max_length=255)
     edad = models.IntegerField()
     raza = models.CharField(max_length=20, choices=Raza.choices, default=Raza.Blanco)
-    etnicidad = models.EmailField()
+    etnicidad = models.CharField(max_length=255)
     telefono = models.BigIntegerField()
 
 
