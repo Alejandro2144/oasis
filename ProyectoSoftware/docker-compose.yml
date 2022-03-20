@@ -9,7 +9,7 @@ services:
               python3 manage.py migrate &&
               python3 manage.py runserver 0.0.0.0:8000"
     environment:
-      - STATIC_ROOT=/backend/static
+      - STATIC_ROOT=/static
       - NAME=app-db
       - USER=postgres
       - PASSWORD=local-password
@@ -24,7 +24,7 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./Oasis/:/backend
+      - ./Oasis/:/app
 
   postgres:
     image: postgres:13.1-alpine
