@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,14 +77,13 @@ WSGI_APPLICATION = 'Oasis.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'db2ek8f531hrn9',
-        'USER': 'ahkjuuyzqeeqwb',
-        'PASSWORD': '7fdb1ec4cbd01172b739dc950cd16979bdc408ba504329776117ca69e31e8e0d',
-        'HOST': 'ec2-54-157-160-218.compute-1.amazonaws.com',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('NAME', ''),
+        "USER": os.getenv("USER", ''),
+        'PASSWORD': os.getenv('PASSWORD', ''),
+        'HOST': os.getenv('HOST', ''),
+        'PORT': os.getenv('PORT', '')
     }
-
 }
 
 

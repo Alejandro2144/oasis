@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from sklearn.preprocessing import maxabs_scale
 
 # Create your models here.
 
@@ -51,5 +50,3 @@ class HistoriaClinica(models.Model):
     medico_encargado = models.DateField(null = False, blank = False)
     motivo_actualizacion = models.TextField(null = False, blank =False)
     firma = models.ImageField(upload_to = "firmas")
-    
-    
