@@ -1,0 +1,43 @@
+version: "3.8"
+services:
+
+  django:
+    build:
+      context: ./Oasis/
+    command: >
+      bash -c "python3 manage.py collectstatic --noinput &&
+              python3 manage.py migrate &&
+              python3 manage.py runserver 0.0.0.0:8000"
+    environment:
+      - STATIC_ROOT=/backend/static
+      - NAME=app-db
+      - USER=postgres
+      - PASSWORD=local-password
+      - HOST=postgres
+      - PORT=5432
+    networks:
+      - app-network
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    volumes:
+      - ./Oasis/:/backend
+
+  postgres:
+    image: postgres:13.1-alpine
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    networks:
+      - app-network
+    environment:
+      - POSTGRES_PASSWORD=local-password
+      - POSTGRES_DB=app-db
+
+networks:
+  app-network:
+
+volumes:
+  postgres-db:
