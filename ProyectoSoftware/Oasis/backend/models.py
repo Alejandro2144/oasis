@@ -23,12 +23,13 @@ class InformacionPaciente(models.Model):
         Negro = "Negro"
         Mestizo = "Mestizo"
     nombre = models.CharField(max_length=255)
-    tipoAfilliacion = models.CharField(max_length=2, choices=TipoAfilliacion.choices, default=TipoAfilliacion.Cedula)
-    noAfiliacion = models.BigIntegerField()
+    tipo_afilliacion = models.CharField(max_length=2, choices=TipoAfilliacion.choices, default=TipoAfilliacion.Cedula)
+    no_afiliacion = models.BigIntegerField()
     aseguradora = models.CharField(max_length=255)
     edad = models.IntegerField()
     raza = models.CharField(max_length=20, choices=Raza.choices, default=Raza.Blanco)
     etnicidad = models.CharField(max_length=255)
+    # email = models.EmailField()
     telefono = models.BigIntegerField()
 
 
@@ -43,8 +44,8 @@ class HistoriaClinica(models.Model):
     antecedentes_sociales_personales = models.TextField(null = True, blank = True)
     antecedentes_familiares = models.TextField(null = True, blank = True)
     inmunizaciones = models.TextField(null = True, blank = True)
-    Revision_por_sistemas = models.TextField(null = False, blank = False)
-    Epicrisis = models.TextField(null = False, blank = False)
+    revision_por_sistemas = models.TextField(null = False, blank = False)
+    epicrisis = models.TextField(null = False, blank = False)
     dia_creado = models.DateField(null = False, blank = False)
     dia_modificado = models.DateField(null = False, blank = False)
     medico_encargado = models.ForeignKey(Usuario, on_delete=models.CASCADE, null = False, blank = False)
