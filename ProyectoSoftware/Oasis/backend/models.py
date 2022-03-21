@@ -47,6 +47,6 @@ class HistoriaClinica(models.Model):
     Epicrisis = models.TextField(null = False, blank = False)
     dia_creado = models.DateField(null = False, blank = False)
     dia_modificado = models.DateField(null = False, blank = False)
-    medico_encargado = models.DateField(null = False, blank = False)
+    medico_encargado = models.ForeignKey(Usuario, on_delete=models.CASCADE, null = False, blank = False)
     motivo_actualizacion = models.TextField(null = False, blank =False)
     firma = models.ImageField(upload_to = "firmas")
