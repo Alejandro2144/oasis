@@ -22,13 +22,13 @@ class InformacionPaciente(models.Model):
         Negro = "Negro"
         Mestizo = "Mestizo"
     nombre = models.CharField(max_length=255)
-    tipo_afilliacion = models.CharField(max_length=2, choices=TipoAfilliacion.choices, default=TipoAfilliacion.Cedula)
+    tipo_afiliacion = models.CharField(max_length=2, choices=TipoAfilliacion.choices, default=TipoAfilliacion.Cedula)
     no_afiliacion = models.BigIntegerField()
     aseguradora = models.CharField(max_length=255)
     edad = models.IntegerField()
     raza = models.CharField(max_length=20, choices=Raza.choices, default=Raza.Blanco)
     etnicidad = models.CharField(max_length=255)
-    # email = models.EmailField()
+    email = models.EmailField()
     telefono = models.BigIntegerField()
 
 

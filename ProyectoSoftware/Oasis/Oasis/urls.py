@@ -25,6 +25,7 @@ urlpatterns = [
     path('home/', backendViews.home),
     path('accounts/', include('django.contrib.auth.urls')),
     path('historias/', backendViews.tabla_historias),
+    path('historias/buscar/', backendViews.buscar_historia),
     path('historias/crear/', backendViews.crear_historia),
     path('registro/', backendViews.registro, name ='registro'),
     path('historias/<int:ID>/', backendViews.historia, name="historia_details")

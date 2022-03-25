@@ -15,9 +15,9 @@
       <tbody>
         {% for historia in historias %}
         <tr>
-          <th scope="row">{{ historia.pk }}</th>
+          <th scope="row"><a href="{{ historia.pk }}/">{{ historia.pk }} </a></th>
           <td>{{ historia.paciente.nombre }}</td>
-          <td>{{ historia.paciente.tipo_afilliacion }}</td>
+          <td>{{ historia.paciente.tipo_afiliacion }}</td>
           <td>{{ historia.paciente.no_afiliacion }}</td>
           <td>{{ historia.paciente.aseguradora }}</td>
           <td>{{ historia.motivo_de_consulta }}</td>

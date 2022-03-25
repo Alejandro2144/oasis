@@ -1,0 +1,36 @@
+{% extends "home.html" %}
+{% block content %}
+<div class="container">
+  <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Nombre</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">No. Afiliación</th>
+          <th scope="col">Aseguradora</th>
+          <th scope="col">Historia Clinica</th>
+        </tr>
+      </thead>
+      <tbody>
+        <form action="/historias/"  method="GET">
+          <tr>
+            <th scope="row"><input type="number" class="form-control" name="pk"></th>
+            <td><input type="text" class="form-control" name="nombre"></td>
+            <td>
+              <select type="text" class="custom-select" name="tipo_afiliacion">
+                <option value="" selected > </option>
+                {%for tipo, _ in tipos.choices %}
+                  <option value="{{tipo}}">{{tipo}}</option>
+                {%endfor %}
+              </select>
+            </td>
+            <td><input type="number" class="form-control" name="no_afiliacion"></td>
+            <td><input type="text" class="form-control" name="aseguradora"></td>
+            <td><input type="text" class="form-control" name="historia_clinica"></td>
+            <td><button>Buscar</button></td>
+          </tr>
+        </form>
+  </table>
+</div>
+{% endblock content %}
