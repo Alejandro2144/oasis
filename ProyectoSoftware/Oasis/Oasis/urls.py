@@ -25,6 +25,6 @@ urlpatterns = [
     path('home/', backendViews.home),
     path('accounts/', include('django.contrib.auth.urls')),
     path('historias/', backendViews.tabla_historias),
-    path('registro/', backendViews.registro, name='registro'),
+    path('historias/crear', backendViews.crear_historia),
     path('historias/<int:ID>', backendViews.historia, name="historia_details")
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

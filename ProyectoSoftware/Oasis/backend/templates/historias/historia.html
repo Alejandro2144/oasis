@@ -1,143 +1,146 @@
 {% extends "home.html" %}
 {% block content %}
-<form>
+<form action="/historias/{{ historia.pk }}" method="POST">{% csrf_token %}
   <div class="container">
     <h1>Información del Paciente</h1>
     <div class="p-5 mb-4 bg-light rounded-3">
       <div class="row mb-3">
         <div class="col">
           <label class="form-label">ID</label>
-          <input type="text" class="form-control" aria-describedby="emailHelp">
+          <input type="text" class="form-control" value="{{ historia.paciente.pk }}" readonly>
         </div>
         <div class="col">
           <label class="form-label">Edad</label>
-          <input type="text" class="form-control" aria-describedby="emailHelp">
+          <input type="number" class="form-control" name="edad" value="{{ historia.paciente.edad }}">
         </div>
       </div>
       <div class="row mb-3">
         <div class="col">
           <label class="form-label">Nombre</label>
-          <input type="text" class="form-control" aria-describedby="emailHelp">
+          <input type="text" class="form-control" name="nombre" value="{{ historia.paciente.nombre }}">
         </div>
         <div class="col">
           <label class="form-label">Raza</label>
-          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          <input type="text" class="form-control" name="raza" value="{{ historia.paciente.raza }}">
         </div>
       </div>
       <div class="row mb-3">
         <div class="col">
           <label class="form-label">Tipo Afiliación</label>
-          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          <input type="text" class="form-control" name="tipo_afiliacion" value="{{ historia.paciente.tipo_afilliacion }}">
         </div>
         <div class="col">
-          <label class="form-label">Email</label>
-          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          <label class="form-label">Etnicidad</label>
+          <input type="text" class="form-control"  name="etnicidad" value="{{ historia.paciente.etnicidad }}">
         </div>
       </div>
       <div class="row mb-3">
         <div class="col">
           <label class="form-label">No. Afiliación</label>
-          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          <input type="text" class="form-control" name="no_afiliacion" value="{{ historia.paciente.no_afiliacion }}">
         </div>
         <div class="col">
-          <label class="form-label">Telefono</label>
-          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control"  name="email" value="{{ historia.paciente.email }}">
         </div>
       </div>
       <div class="row mb-3">
         <div class="col">
-          <label for="exampleInputEmail1" class="form-label">Aseguradora</label>
-          <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+          <label class="form-label">Aseguradora</label>
+          <input type="text" class="form-control" name="aseguradora" value="{{ historia.paciente.aseguradora }}">
         </div>
-        <div class="col"></div>
+        <div class="col">
+          <label class="form-label">Telefono</label>
+          <input type="number" class="form-control" name="telefono" value="{{ historia.paciente.telefono }}">
+        </div>
       </div>
     </div>
     <h1>Datos</h1>
     <div class="p-5 mb-4 bg-light rounded-3">
       <div class="row">
         <div class="col">
-          <a href="">Motivo de consulta</a>
+          <a href="#motivo_de_consulta">Motivo de consulta</a>
         </div>
         <div class="col">
-          <a href="">Enfermedad actual</a>
+          <a href="#enfermedad_actual">Enfermedad actual</a>
         </div>
         <div class="col">
-          <a href="">Antecedentes mórbidos</a>
+          <a href="#antecedentes_morbidos">Antecedentes mórbidos</a>
         </div>
         <div class="col">
-          <a href="">Antecedentes ginecoobstétricos</a>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <a href="">Medicamentos</a>
-        </div>
-        <div class="col">
-          <a href="">Alergias</a>
-        </div>
-        <div class="col">
-          <a href="">Antecedentes sociales y personales</a>
-        </div>
-        <div class="col">
-          <a href="">Antecedentes familiares</a>
+          <a href="#antecedentes_ginecoobstétricos">Antecedentes ginecoobstétricos</a>
         </div>
       </div>
       <div class="row">
         <div class="col">
-          <a href="">Inmunizaciones</a>
+          <a href="#medicamentos">Medicamentos</a>
         </div>
         <div class="col">
-          <a href="">Revisión por sistemas</a>
+          <a href="#alergias">Alergias</a>
         </div>
         <div class="col">
-          <a href="">Epicrisis</a>
+          <a href="#antecedentes_sociales_personales">Antecedentes sociales y personales</a>
+        </div>
+        <div class="col">
+          <a href="#antecedentes_familiares">Antecedentes familiares</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <a href="#inmunizaciones">Inmunizaciones</a>
+        </div>
+        <div class="col">
+          <a href="#revision_por_sistemas">Revisión por sistemas</a>
+        </div>
+        <div class="col">
+          <a href="#epicrisis">Epicrisis</a>
         </div>
         <div class="col"></div>
       </div>
     </div>
     <div>
-      <h1>Motivo de Consulta</h1>
-      <textarea class="form-control" id="form4Example3" rows="5"></textarea>
+      <h1 id="motivo_de_consulta">Motivo de Consulta</h1>
+      <textarea class="form-control" rows="5" name="motivo_de_consulta">{{ historia.motivo_de_consulta }}</textarea>
     </div>
     <div>
-      <h1>Enfermedad Actual</h1>
-      <textarea class="form-control" id="form4Example3" rows="5"></textarea>
+      <h1 id="enfermedad_actual">Enfermedad Actual</h1>
+      <textarea class="form-control" rows="5" name="enfermedad_actual">{{ historia.enfermedad_actual }}</textarea>
     </div>
     <div>
-      <h1>Antecedentes Mórbidos</h1>
-      <textarea class="form-control" id="form4Example3" rows="5"></textarea>
+      <h1 id="antecedentes_morbidos">Antecedentes Mórbidos</h1>
+      <textarea class="form-control" rows="5" name="antecedentes_morbidos">{{ historia.antecedentes_morbidos }}</textarea>
     </div>
     <div>
-      <h1>Antecedentes Ginecoobstétricos</h1>
-      <textarea class="form-control" id="form4Example3" rows="5"></textarea>
+      <h1 id="antecedentes_ginecoobstétricos">Antecedentes Ginecoobstétricos</h1>
+      <textarea class="form-control" rows="5" name="antecedentes_ginecoobstétricos">{{ historia.antecedentes_ginecoobstétricos }}</textarea>
     </div>
     <div>
-      <h1>Medicamentos</h1>
-      <textarea class="form-control" id="form4Example3" rows="5"></textarea>
+      <h1 id="medicamentos">Medicamentos</h1>
+      <textarea class="form-control" rows="5" name="medicamentos">{{ historia.medicamentos}}</textarea>
     </div>
     <div>
-      <h1>Alegias</h1>
-      <textarea class="form-control" id="form4Example3" rows="5"></textarea>
+      <h1 id="alergias">Alegias</h1>
+      <textarea class="form-control" rows="5" name="alergias">{{ historia.alergias }}</textarea>
     </div>
     <div>
-      <h1>Antecedentes Sociales y Personales</h1>
-      <textarea class="form-control" id="form4Example3" rows="5"></textarea>
+      <h1 id="antecedentes_sociales_personales">Antecedentes Sociales y Personales</h1>
+      <textarea class="form-control" rows="5" name="antecedentes_sociales_personales">{{ historia.antecedentes_sociales_personales }}</textarea>
     </div>
     <div>
-      <h1>Antecedentes Familiares</h1>
-      <textarea class="form-control" id="form4Example3" rows="5"></textarea>
+      <h1 id="antecedentes_familiares">Antecedentes Familiares</h1>
+      <textarea class="form-control" rows="5" name="antecedentes_familiares">{{ historia.antecedentes_familiares }}</textarea>
     </div>
     <div>
-      <h1>Inmunizaciones</h1>
-      <textarea class="form-control" id="form4Example3" rows="5"></textarea>
+      <h1 id="inmunizaciones">Inmunizaciones</h1>
+      <textarea class="form-control" rows="5" name="inmunizaciones">{{ historia.inmunizaciones }}</textarea>
     </div>
     <div>
-      <h1>Revisión por Sistemas</h1>
-      <textarea class="form-control" id="form4Example3" rows="5"></textarea>
+      <h1 id="revision_por_sistemas">Revisión por Sistemas</h1>
+      <textarea class="form-control" rows="5" name="revision_por_sistemas">{{ historia.revision_por_sistemas }}</textarea>
     </div>
     <div>
-      <h1>Epicrisis</h1>
-      <textarea class="form-control" id="form4Example3" rows="5"></textarea>
+      <h1 id="epicrisis">Epicrisis</h1>
+      <textarea class="form-control" rows="5" name="epicrisis">{{ historia.epicrisis }}</textarea>
     </div>
     <button>Guadar</button>
   </div>
