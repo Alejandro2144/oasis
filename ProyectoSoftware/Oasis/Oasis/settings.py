@@ -28,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost"]
 
+LOGIN_REDIRECT_URL ='/home'
+LOGOUT_REDIRECT_URL ='/'
+
 
 # Application definition
 
@@ -39,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'backend',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
