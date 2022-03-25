@@ -150,6 +150,12 @@
       <h1 id="epicrisis">Epicrisis</h1>
       <textarea class="form-control" rows="5" name="epicrisis">{{ historia.epicrisis }}</textarea>
     </div>
+    {% if historia.pk != "crear"%}
+    <div>
+      <h1 id="epicrisis">Motivo Actualización</h1>
+      <textarea class="form-control" rows="5" name="motivo_actualizacion">{{ historia.motivo_actualizacion }}</textarea>
+    </div>
+    {% endif %}
     <button>Guadar</button>
   </div>
 </form>
