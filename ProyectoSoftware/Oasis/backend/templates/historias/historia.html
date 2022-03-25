@@ -1,6 +1,6 @@
 {% extends "home.html" %}
 {% block content %}
-<form action="/historias/{{ historia.pk }}" method="POST">{% csrf_token %}
+<form action="/historias/{{ historia.pk }}/" method="POST">{% csrf_token %}
   <div class="container">
     <h1>Información del Paciente</h1>
     <div class="p-5 mb-4 bg-light rounded-3">
@@ -11,7 +11,7 @@
         </div>
         <div class="col">
           <label class="form-label">Edad</label>
-          <input type="number" class="form-control" name="edad" value="{{ historia.paciente.edad }}">
+          <input type="number" min="0" class="form-control" name="edad" value="{{ historia.paciente.edad }}">
         </div>
       </div>
       <div class="row mb-3">
@@ -21,13 +21,21 @@
         </div>
         <div class="col">
           <label class="form-label">Raza</label>
-          <input type="text" class="form-control" name="raza" value="{{ historia.paciente.raza }}">
+          <select type="text" class="custom-select" name="raza">
+            {%for raza, _ in razas.choices %}
+            <option value="{{raza}}" {% if raza == historia.paciente.raza %} selected="selected" {% endif %}>{{raza}}</option>
+            {%endfor %}
+          </select>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col">
           <label class="form-label">Tipo Afiliación</label>
-          <input type="text" class="form-control" name="tipo_afiliacion" value="{{ historia.paciente.tipo_afilliacion }}">
+          <select type="text" class="custom-select" name="tipo_afiliacion"">
+            {%for tipo, _ in tipos.choices %}
+            <option value="{{tipo}}" {% if tipo == historia.paciente.tipo_afiliacion %} selected="selected" {% endif %}>{{tipo}}</option>
+            {%endfor %}
+          </select>
         </div>
         <div class="col">
           <label class="form-label">Etnicidad</label>
@@ -37,7 +45,7 @@
       <div class="row mb-3">
         <div class="col">
           <label class="form-label">No. Afiliación</label>
-          <input type="text" class="form-control" name="no_afiliacion" value="{{ historia.paciente.no_afiliacion }}">
+          <input type="number" class="form-control" name="no_afiliacion" value="{{ historia.paciente.no_afiliacion }}">
         </div>
         <div class="col">
           <label class="form-label">Email</label>
@@ -144,5 +152,6 @@
     </div>
     <button>Guadar</button>
   </div>
-  </form>
+</form>
+
 {% endblock content %}

@@ -57,7 +57,7 @@ def historia(request, ID):
             messages.error(request, 'Error saving form')
         return redirect("/historias")
     historia = get_object_or_404(HistoriaClinica, pk=ID)
-    return render(request, 'historias/historia.html', {'historia': historia})
+    return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza})
 
 def registro(request):
     data = {
@@ -77,7 +77,6 @@ def registro(request):
 
 def crear_historia(request):
     if request.method == 'POST':
-        print(request.POST, flush=True)
         post = request.POST
         paciente, created = InformacionPaciente.objects.get_or_create(
             nombre=post.get('nombre', 0),
@@ -114,4 +113,4 @@ def crear_historia(request):
         #     messages.error(request, 'Error creando historia de usuario')
         return redirect("/historias")
     historia = {'pk': 'crear'}
-    return render(request, 'historias/historia.html', {'historia': historia})
+    return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza})

@@ -17,7 +17,6 @@ class InformacionPaciente(models.Model):
     class TipoAfilliacion(models.TextChoices):
         Cedula = "CC"
         TarjetaIdentidad = "TI"
-        Pasaporte = "PA"
     class Raza(models.TextChoices):
         Blanco = "Blanco"
         Negro = "Negro"
