@@ -1,3 +1,4 @@
+import email
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
@@ -24,13 +25,13 @@ def tabla_historias(request):
         if buscar.get('pk', 0) != "":
             kwargs['pk'] = int(buscar.get('pk', 0))
         if buscar.get('nombre', 0) != "":
-            kwargs['paciente__nombre'] = buscar.get('nombre', 0)
+            kwargs['paciente__nombre__contains'] = buscar.get('nombre', 0)
         if buscar.get('tipo_afiliacion', 0) != "":
             kwargs['paciente__tipo_afiliacion'] = buscar.get('tipo_afiliacion', 0)
         if buscar.get('no_afiliacion', 0) != "":
             kwargs['paciente__no_afiliacion'] = int(buscar.get('no_afiliacion', 0))
         if buscar.get('aseguradora', 0) != "":
-            kwargs['paciente__aseguradora'] = buscar.get('aseguradora', 0)
+            kwargs['paciente__aseguradora__contains'] = buscar.get('aseguradora', 0)
         if buscar.get('historia_clinica', 0) != "":
             historias = HistoriaClinica.objects.filter(Q(motivo_de_consulta__contains=buscar.get('historia_clinica', 0)) |
                                                         Q(enfermedad_actual__contains=buscar.get('historia_clinica', 0)) |
@@ -51,35 +52,39 @@ def tabla_historias(request):
 def historia(request, ID):
     if request.method == 'POST':
         post = request.POST
-        paciente, created = InformacionPaciente.objects.get_or_create(no_afiliacion=post.get('no_afiliacion',0))
-        paciente.nombre=post.get('nombre', 0)
-        paciente.tipo_afiliacion=post.get('tipo_afiliacion', 0)
-        paciente.aseguradora=post.get('aseguradora', 0)
-        paciente.edad=post.get('edad', 0)
-        paciente.raza=post.get('raza', 0)
-        paciente.etnicidad=post.get('etnicidad', 0)
-        paciente.email=post.get('email', 0)
-        paciente.telefono=post.get('telefono', 0)
-        paciente.save()
-        historia = HistoriaClinica.objects.get(pk=ID)
-        historia.paciente = paciente
-        historia.motivo_de_consulta = post.get('motivo_de_consulta', 0)
-        historia.enfermedad_actual = post.get('enfermedad_actual', 0)
-        historia.antecedentes_morbidos = post.get('antecedentes_morbidos', 0)
-        historia.antecedentes_ginecoobstétricos = post.get('antecedentes_ginecoobstétricos', 0)
-        historia.medicamentos = post.get('medicamentos', 0)
-        historia.alergias = post.get('alergias', 0)
-        historia.antecedentes_sociales_personales = post.get('antecedentes_sociales_personales', 0)
-        historia.antecedentes_familiares = post.get('antecedentes_familiares', 0)
-        historia.inmunizaciones = post.get('inmunizaciones', 0)
-        historia.revision_por_sistemas = post.get('revision_por_sistemas', 0)
-        historia.epicrisis = post.get('epicrisis', 0)
-        historia.dia_modificado = date.today()
-        usuario = Usuario.objects.get(pk=request.user.id)
-        historia.medico_encargado = usuario
-        historia.motivo_actualizacion = post.get('motivo_actualizacion', 0)
-        historia.firma = post.get('firma', 0)
-        historia.save()
+        try:
+            paciente, created = InformacionPaciente.objects.get_or_create(no_afiliacion=post.get('no_afiliacion',0))
+            paciente.nombre=post.get('nombre', 0)
+            paciente.tipo_afiliacion=post.get('tipo_afiliacion', 0)
+            paciente.aseguradora=post.get('aseguradora', 0)
+            paciente.edad=post.get('edad', 0)
+            paciente.raza=post.get('raza', 0)
+            paciente.etnicidad=post.get('etnicidad', 0)
+            paciente.email=post.get('email', 0)
+            paciente.telefono=post.get('telefono', 0)
+            paciente.save()
+            historia = HistoriaClinica.objects.get(pk=ID)
+            historia.paciente = paciente
+            historia.motivo_de_consulta = post.get('motivo_de_consulta', 0)
+            historia.enfermedad_actual = post.get('enfermedad_actual', 0)
+            historia.antecedentes_morbidos = post.get('antecedentes_morbidos', 0)
+            historia.antecedentes_ginecoobstétricos = post.get('antecedentes_ginecoobstétricos', 0)
+            historia.medicamentos = post.get('medicamentos', 0)
+            historia.alergias = post.get('alergias', 0)
+            historia.antecedentes_sociales_personales = post.get('antecedentes_sociales_personales', 0)
+            historia.antecedentes_familiares = post.get('antecedentes_familiares', 0)
+            historia.inmunizaciones = post.get('inmunizaciones', 0)
+            historia.revision_por_sistemas = post.get('revision_por_sistemas', 0)
+            historia.epicrisis = post.get('epicrisis', 0)
+            historia.dia_modificado = date.today()
+            usuario = Usuario.objects.get(pk=request.user.id)
+            historia.medico_encargado = usuario
+            historia.motivo_actualizacion = post.get('motivo_actualizacion', 0)
+            historia.firma = post.get('firma', 0)
+            historia.save()
+            messages.success(request, "Historia actualizada")
+        except:
+            messages.error(request, "Error actualizando historia")
         return redirect("/historias")
     historia = get_object_or_404(HistoriaClinica, pk=ID)
     return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza})
@@ -103,36 +108,41 @@ def registro(request):
 def crear_historia(request):
     if request.method == 'POST':
         post = request.POST
-        paciente, created = InformacionPaciente.objects.get_or_create(
-            nombre=post.get('nombre', 0),
-            tipo_afiliacion=post.get('tipo_afiliacion', 0),
-            no_afiliacion=post.get('no_afiliacion',0),
-            aseguradora=post.get('aseguradora', 0),
-            edad=post.get('edad', 0),
-            raza=post.get('raza', 0),
-            etnicidad=post.get('etnicidad', 0),
-            telefono=post.get('telefono', 0)
-        )
-        usuario = Usuario.objects.get(pk=request.user.id)
-        HistoriaClinica.objects.create(
-            paciente = paciente,
-            motivo_de_consulta = post.get('motivo_de_consulta', 0),
-            enfermedad_actual = post.get('enfermedad_actual', 0),
-            antecedentes_morbidos = post.get('antecedentes_morbidos', 0),
-            antecedentes_ginecoobstétricos = post.get('antecedentes_ginecoobstétricos', 0),
-            medicamentos = post.get('medicamentos', 0),
-            alergias = post.get('alergias', 0),
-            antecedentes_sociales_personales = post.get('antecedentes_sociales_personales', 0),
-            antecedentes_familiares = post.get('antecedentes_familiares', 0),
-            inmunizaciones = post.get('inmunizaciones', 0),
-            revision_por_sistemas = post.get('revision_por_sistemas', 0),
-            epicrisis = post.get('epicrisis', 0),
-            dia_creado = date.today(),
-            dia_modificado = date.today(),
-            medico_encargado = usuario,
-            motivo_actualizacion = "",
-            firma = post.get('firma', 0)
-        )
+        try:
+            paciente = InformacionPaciente.objects.create(
+                nombre=post.get('nombre', 0),
+                tipo_afiliacion=post.get('tipo_afiliacion', 0),
+                no_afiliacion=post.get('no_afiliacion',0),
+                aseguradora=post.get('aseguradora', 0),
+                edad=post.get('edad', 0),
+                raza=post.get('raza', 0),
+                etnicidad=post.get('etnicidad', 0),
+                email=post.get('email', 0),
+                telefono=post.get('telefono', 0)
+            )
+            usuario = Usuario.objects.get(pk=request.user.id)
+            HistoriaClinica.objects.create(
+                paciente = paciente,
+                motivo_de_consulta = post.get('motivo_de_consulta', 0),
+                enfermedad_actual = post.get('enfermedad_actual', 0),
+                antecedentes_morbidos = post.get('antecedentes_morbidos', 0),
+                antecedentes_ginecoobstétricos = post.get('antecedentes_ginecoobstétricos', 0),
+                medicamentos = post.get('medicamentos', 0),
+                alergias = post.get('alergias', 0),
+                antecedentes_sociales_personales = post.get('antecedentes_sociales_personales', 0),
+                antecedentes_familiares = post.get('antecedentes_familiares', 0),
+                inmunizaciones = post.get('inmunizaciones', 0),
+                revision_por_sistemas = post.get('revision_por_sistemas', 0),
+                epicrisis = post.get('epicrisis', 0),
+                dia_creado = date.today(),
+                dia_modificado = date.today(),
+                medico_encargado = usuario,
+                motivo_actualizacion = "",
+                firma = post.get('firma', 0)
+            )
+            messages.success(request, "Historia creada")
+        except:
+            messages.error(request, "Error creando historia")
         return redirect("/historias")
     historia = {'pk': 'crear'}
     return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza})

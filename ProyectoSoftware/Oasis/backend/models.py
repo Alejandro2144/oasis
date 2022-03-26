@@ -23,7 +23,7 @@ class InformacionPaciente(models.Model):
         Mestizo = "Mestizo"
     nombre = models.CharField(max_length=255)
     tipo_afiliacion = models.CharField(max_length=2, choices=TipoAfilliacion.choices, default=TipoAfilliacion.Cedula)
-    no_afiliacion = models.BigIntegerField()
+    no_afiliacion = models.BigIntegerField(primary_key=True)
     aseguradora = models.CharField(max_length=255)
     edad = models.IntegerField()
     raza = models.CharField(max_length=20, choices=Raza.choices, default=Raza.Blanco)
@@ -33,7 +33,7 @@ class InformacionPaciente(models.Model):
 
 
 class HistoriaClinica(models.Model):
-    paciente = models.ForeignKey(InformacionPaciente, on_delete=models.CASCADE)
+    paciente = models.OneToOneField(InformacionPaciente, on_delete=models.CASCADE)
     motivo_de_consulta = models.TextField(null = False, blank = False)
     enfermedad_actual = models.TextField(null = False, blank=False)
     antecedentes_morbidos = models.TextField(null = False, blank = False)
