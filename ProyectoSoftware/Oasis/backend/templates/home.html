@@ -2,6 +2,18 @@
 {% load static %}
 
 {% block content %}
+{% if messages %}
+
+<div class="row">
+<div class="col-sm-6 col-sm-offset-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert">
+        <p>{{ message }}</p>
+    </div>
+    {% endfor %}
+    </div>
+</div>
+{% endif %}
 
 <img class="portada" src="{% static 'images/Oasis.png'%}" style="max-width:100%;width:auto;height:auto;">
 

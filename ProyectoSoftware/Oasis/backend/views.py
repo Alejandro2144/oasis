@@ -26,6 +26,9 @@ def inicio(request):
     return render(request, 'home.html')
 
 def tabla_historias(request):
+    if permisos(request.user.id,[Usuario.Cargos.Paciente, Usuario.Cargos.Investigador]):
+        messages.error(request, "No tienes acceso a esta función")
+        return redirect('/')
     buscar = request.GET
     if len(buscar) > 0:
         kwargs = {}
@@ -88,12 +91,20 @@ def actualizar_o_crear_historia_clinica(post, ID , paciente, user_id):
     historia.firma = post.get('firma', 0)
     return historia
 
-def historia(request, ID):
+def ver_historia(request, ID):
     if request.method == 'POST':
+        if not permisos(request.user.id,[Usuario.Cargos.Administrador, Usuario.Cargos.Medico, Usuario.Cargos.Secretaria]):
+            messages.error(request, "No tienes acceso a esta función")
+            return redirect('/')
         post = request.POST
         try:
             paciente = actualizar_o_crear_paciente(post, False)
             paciente.save()
+
+            if permisos(request.user.id, [Usuario.Cargos.Secretaria]):
+                messages.success(request, "Información actualizada")
+                return redirect('/historias')
+
             historia = actualizar_o_crear_historia_clinica(post, ID, paciente, request.user.id)
             historia.motivo_actualizacion = post.get('motivo_actualizacion', 0)
             historia.save()
@@ -101,10 +112,32 @@ def historia(request, ID):
         except:
             messages.error(request, "Error actualizando historia")
         return redirect("/historias")
-    historia = get_object_or_404(HistoriaClinica, pk=ID)
-    return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza})
 
-def registro(request):
+    if permisos(request.user.id,[Usuario.Cargos.Investigador]):
+        messages.error(request, "No tienes acceso a esta función")
+        return redirect('/')
+    
+    cargo = 0
+    if permisos(request.user.id,[Usuario.Cargos.Secretaria]):
+        cargo = 1
+    if permisos(request.user.id,[Usuario.Cargos.Paciente]):
+        cargo = 2
+
+    # if permisos(request.user.id,[Usuario.Cargos.Paciente]):
+    #     usuario = Usuario.objects.get(pk=request.user.id)
+    #     if usuario.historia == ID:
+    #         historia = get_object_or_404(HistoriaClinica, pk=ID)
+    #         return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza, 'cargo': cargo})
+    #     else:
+    #         messages.error(request, "No tienes acceso a esta función")
+    #         return redirect('/')
+    historia = get_object_or_404(HistoriaClinica, pk=ID)
+    return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza, 'cargo': cargo})
+
+def registrar(request):
+    if not permisos(request.user.id,[Usuario.Cargos.Administrador]):
+        messages.error(request, "No tienes acceso a esta función")
+        return redirect('/')
     data = {
         'form' : CustomUserCreationForm()
     }
@@ -114,8 +147,6 @@ def registro(request):
             formulario.save()
             user = authenticate(username = formulario.cleaned_data['username'], password = formulario.cleaned_data['password1'])
             login(request, user)
-            # if permisos([Usuario.Cargos.Paciente]):
-            #     return redirect('/historias/' + Usuario)
             messages.success(request,"Se ha registrado correctamente")
             return redirect ('/home')
         data["form"] = formulario
@@ -123,11 +154,20 @@ def registro(request):
     return render(request, 'registration/registro.html', data)
 
 def crear_historia(request):
-    if request.method == 'POST':
+    if not permisos(request.user.id,[Usuario.Cargos.Administrador, Usuario.Cargos.Medico, Usuario.Cargos.Secretaria]):
+        messages.error(request, "No tienes acceso a esta función")
+        return redirect('/')
+
+    if request.method == 'POST': 
         post = request.POST
         try:
             paciente = actualizar_o_crear_paciente(post, True)
             paciente.save()
+
+            if permisos(request.user.id, [Usuario.Cargos.Secretaria]):
+                messages.success(request, "Información actualizada")
+                return redirect('/historias')
+                
             historia = actualizar_o_crear_historia_clinica(post, None, paciente, request.user.id)
             historia.dia_creado = date.today()
             historia.save()
@@ -139,4 +179,7 @@ def crear_historia(request):
     return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza})
 
 def buscar_historia(request):
+    if permisos(request.user.id,[Usuario.Cargos.Paciente]):
+        messages.error(request, "No tienes acceso a esta función")
+        return redirect('/')
     return render(request, "historias/buscar.html", {'tipos' : InformacionPaciente.TipoAfilliacion})

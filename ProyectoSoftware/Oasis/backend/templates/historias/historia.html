@@ -11,17 +11,17 @@
         </div>
         <div class="col">
           <label class="form-label">Edad</label>
-          <input type="number" min="0" class="form-control" name="edad" value="{{ historia.paciente.edad }}" required>
+          <input type="number" min="0" class="form-control" name="edad" value="{{ historia.paciente.edad }}" required {% if cargo > 1 %} readonly {% endif %}>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col">
           <label class="form-label">Nombre</label>
-          <input type="text" class="form-control" name="nombre" value="{{ historia.paciente.nombre }}" required>
+          <input type="text" class="form-control" name="nombre" value="{{ historia.paciente.nombre }}" required {% if cargo > 1 %} readonly {% endif %}>
         </div>
         <div class="col">
           <label class="form-label">Raza</label>
-          <select type="text" class="custom-select" name="raza" required>
+          <select type="text" class="custom-select" name="raza" required {% if cargo > 1 %} readonly {% endif %}>
             {%for raza, _ in razas.choices %}
             <option value="{{raza}}" {% if raza == historia.paciente.raza %} selected="selected" {% endif %}>{{raza}}</option>
             {%endfor %}
@@ -31,7 +31,7 @@
       <div class="row mb-3">
         <div class="col">
           <label class="form-label">Tipo Afiliación</label>
-          <select type="text" class="custom-select" name="tipo_afiliacion"" required>
+          <select type="text" class="custom-select" name="tipo_afiliacion" required {% if cargo > 1 %} readonly {% endif %}>
             {%for tipo, _ in tipos.choices %}
             <option value="{{tipo}}" {% if tipo == historia.paciente.tipo_afiliacion %} selected="selected" {% endif %}>{{tipo}}</option>
             {%endfor %}
@@ -39,27 +39,27 @@
         </div>
         <div class="col">
           <label class="form-label">Etnicidad</label>
-          <input type="text" class="form-control"  name="etnicidad" value="{{ historia.paciente.etnicidad }}" required>
+          <input type="text" class="form-control"  name="etnicidad" value="{{ historia.paciente.etnicidad }}" required {% if cargo > 1 %} readonly {% endif %}>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col">
           <label class="form-label">No. Afiliación</label>
-          <input type="number" min="0" class="form-control" name="no_afiliacion" value="{{ historia.paciente.no_afiliacion }}" required>
+          <input type="number" min="0" class="form-control" name="no_afiliacion" value="{{ historia.paciente.no_afiliacion }}" required {% if cargo > 1 %} readonly {% endif %}>
         </div>
         <div class="col">
           <label class="form-label">Email</label>
-          <input type="email" class="form-control"  name="email" value="{{ historia.paciente.email }}" required>
+          <input type="email" class="form-control"  name="email" value="{{ historia.paciente.email }}" required {% if cargo > 1 %} readonly {% endif %}>
         </div>
       </div>
       <div class="row mb-3">
         <div class="col">
           <label class="form-label">Aseguradora</label>
-          <input type="text" class="form-control" name="aseguradora" value="{{ historia.paciente.aseguradora }}" required>
+          <input type="text" class="form-control" name="aseguradora" value="{{ historia.paciente.aseguradora }}" required {% if cargo > 1 %} readonly {% endif %}>
         </div>
         <div class="col">
           <label class="form-label">Telefono</label>
-          <input type="number" min="0" class="form-control" name="telefono" value="{{ historia.paciente.telefono }}" required>
+          <input type="number" min="0" class="form-control" name="telefono" value="{{ historia.paciente.telefono }}" required {% if cargo > 1 %} readonly {% endif %}>
         </div>
       </div>
     </div>
@@ -108,52 +108,52 @@
     </div>
     <div>
       <h1 id="motivo_de_consulta">Motivo de Consulta</h1>
-      <textarea class="form-control" rows="5" name="motivo_de_consulta" required>{{ historia.motivo_de_consulta }}</textarea>
+      <textarea class="form-control" rows="5" name="motivo_de_consulta" required {% if cargo > 0 %} readonly {% endif %}>{{ historia.motivo_de_consulta }}</textarea>
     </div>
     <div>
       <h1 id="enfermedad_actual">Enfermedad Actual</h1>
-      <textarea class="form-control" rows="5" name="enfermedad_actual" required>{{ historia.enfermedad_actual }}</textarea>
+      <textarea class="form-control" rows="5" name="enfermedad_actual" required {% if cargo > 0 %} readonly {% endif %} >{{ historia.enfermedad_actual }}</textarea>
     </div>
     <div>
       <h1 id="antecedentes_morbidos">Antecedentes Mórbidos</h1>
-      <textarea class="form-control" rows="5" name="antecedentes_morbidos" required>{{ historia.antecedentes_morbidos }}</textarea>
+      <textarea class="form-control" rows="5" name="antecedentes_morbidos" required {% if cargo > 0 %} readonly {% endif %}>{{ historia.antecedentes_morbidos }}</textarea>
     </div>
     <div>
       <h1 id="antecedentes_ginecoobstétricos">Antecedentes Ginecoobstétricos</h1>
-      <textarea class="form-control" rows="5" name="antecedentes_ginecoobstétricos" required>{{ historia.antecedentes_ginecoobstétricos }}</textarea>
+      <textarea class="form-control" rows="5" name="antecedentes_ginecoobstétricos" required {% if cargo > 0 %} readonly {% endif %}>{{ historia.antecedentes_ginecoobstétricos }}</textarea>
     </div>
     <div>
       <h1 id="medicamentos">Medicamentos</h1>
-      <textarea class="form-control" rows="5" name="medicamentos" required>{{ historia.medicamentos}}</textarea>
+      <textarea class="form-control" rows="5" name="medicamentos" required {% if cargo > 0 %} readonly {% endif %}>{{ historia.medicamentos}}</textarea>
     </div>
     <div>
       <h1 id="alergias">Alegias</h1>
-      <textarea class="form-control" rows="5" name="alergias" required>{{ historia.alergias }}</textarea>
+      <textarea class="form-control" rows="5" name="alergias" required {% if cargo > 0 %} readonly {% endif %}>{{ historia.alergias }}</textarea>
     </div>
     <div>
       <h1 id="antecedentes_sociales_personales">Antecedentes Sociales y Personales</h1>
-      <textarea class="form-control" rows="5" name="antecedentes_sociales_personales" required>{{ historia.antecedentes_sociales_personales }}</textarea>
+      <textarea class="form-control" rows="5" name="antecedentes_sociales_personales" required {% if cargo > 0 %} readonly {% endif %}>{{ historia.antecedentes_sociales_personales }}</textarea>
     </div>
     <div>
       <h1 id="antecedentes_familiares">Antecedentes Familiares</h1>
-      <textarea class="form-control" rows="5" name="antecedentes_familiares" required>{{ historia.antecedentes_familiares }}</textarea>
+      <textarea class="form-control" rows="5" name="antecedentes_familiares" required {% if cargo > 0 %} readonly {% endif %}>{{ historia.antecedentes_familiares }}</textarea>
     </div>
     <div>
       <h1 id="inmunizaciones">Inmunizaciones</h1>
-      <textarea class="form-control" rows="5" name="inmunizaciones" required>{{ historia.inmunizaciones }}</textarea>
+      <textarea class="form-control" rows="5" name="inmunizaciones" required {% if cargo > 0 %} readonly {% endif %}>{{ historia.inmunizaciones }}</textarea>
     </div>
     <div>
       <h1 id="revision_por_sistemas">Revisión por Sistemas</h1>
-      <textarea class="form-control" rows="5" name="revision_por_sistemas" required>{{ historia.revision_por_sistemas }}</textarea>
+      <textarea class="form-control" rows="5" name="revision_por_sistemas" required {% if cargo > 0 %} readonly {% endif %}>{{ historia.revision_por_sistemas }}</textarea>
     </div>
     <div>
       <h1 id="epicrisis">Epicrisis</h1>
-      <textarea class="form-control" rows="5" name="epicrisis" required>{{ historia.epicrisis }}</textarea>
+      <textarea class="form-control" rows="5" name="epicrisis" required {% if cargo > 0 %} readonly {% endif %}>{{ historia.epicrisis }}</textarea>
     </div>
     {% if historia.pk != "crear"%}
     <div>
       <h1 id="epicrisis">Motivo Actualización</h1>
-      <textarea class="form-control" rows="5" name="motivo_actualizacion" required>{{ historia.motivo_actualizacion }}</textarea>
+      <textarea class="form-control" rows="5" name="motivo_actualizacion" required {% if cargo > 0 %} readonly {% endif %}>{{ historia.motivo_actualizacion }}</textarea>
     </div>
     {% endif %}
     <button>Guadar</button>
