@@ -1,5 +1,6 @@
 {% extends "home.html" %}
 {% block content %}
+{% if cargo == 0 %}
 <div class="container">
   <table class="table">
       <thead>
@@ -33,4 +34,36 @@
         </form>
   </table>
 </div>
+{% endif %}
+{% if cargo == 1 %}
+<div class="container">
+  <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Edad</th>
+          <th scope="col">Raza</th>
+          <th scope="col">Etnicidad</th>
+          <th scope="col">Historia Clinica</th>
+        </tr>
+      </thead>
+      <tbody>
+        <form action="/informacion_investigador/"  method="GET">
+          <tr>
+            <th scope="row"><input type="number" class="form-control" name="edad"></th>
+            <td>
+              <select type="text" class="custom-select" name="raza">
+                <option value="" selected > </option>
+                {%for raza, _ in razas.choices %}
+                  <option value="{{raza}}">{{raza}}</option>
+                {%endfor %}
+              </select>
+            </td>
+            <td><input type="text" class="form-control" name="etnicidad"></td>
+            <td><input type="text" class="form-control" name="historia_clinica"></td>
+            <td><button>Buscar</button></td>
+          </tr>
+        </form>
+  </table>
+</div>
+{% endif %}
 {% endblock content %}

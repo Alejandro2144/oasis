@@ -21,9 +21,9 @@
         </div>
         <div class="col">
           <label class="form-label">Raza</label>
-          <select type="text" class="custom-select" name="raza" required {% if cargo > 1 %} readonly {% endif %}>
+          <select type="text" class="custom-select" name="raza" required>
             {%for raza, _ in razas.choices %}
-            <option value="{{raza}}" {% if raza == historia.paciente.raza %} selected="selected" {% endif %}>{{raza}}</option>
+            <option value="{{raza}}" {% if raza == historia.paciente.raza %} selected="selected" {% endif %} {% if cargo > 1 %} disabled {% endif %}>{{raza}}</option>
             {%endfor %}
           </select>
         </div>
@@ -31,9 +31,9 @@
       <div class="row mb-3">
         <div class="col">
           <label class="form-label">Tipo Afiliación</label>
-          <select type="text" class="custom-select" name="tipo_afiliacion" required {% if cargo > 1 %} readonly {% endif %}>
+          <select type="text" class="custom-select" name="tipo_afiliacion" required>
             {%for tipo, _ in tipos.choices %}
-            <option value="{{tipo}}" {% if tipo == historia.paciente.tipo_afiliacion %} selected="selected" {% endif %}>{{tipo}}</option>
+            <option value="{{tipo}}" {% if tipo == historia.paciente.tipo_afiliacion %} selected="selected" {% endif %} {% if cargo > 1 %} disabled {% endif %}>{{tipo}}</option>
             {%endfor %}
           </select>
         </div>
@@ -156,7 +156,9 @@
       <textarea class="form-control" rows="5" name="motivo_actualizacion" required {% if cargo > 0 %} readonly {% endif %}>{{ historia.motivo_actualizacion }}</textarea>
     </div>
     {% endif %}
+    {% if cargo < 2 %}
     <button>Guadar</button>
+    {% endif %}
   </div>
 </form>
 

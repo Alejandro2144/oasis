@@ -1,18 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-# Create your models here.
-
-class Usuario(AbstractUser):
-    class Cargos(models.TextChoices):
-        Medico = "Medico"
-        Investigador = "Investigador"
-        Administrador = "Administrador"
-        Paciente = "Paciente"
-        Secretaria = "Secretaria"
-    cargo = models.CharField(max_length=20, choices=Cargos.choices, default = Cargos.Paciente)
-
-
 class InformacionPaciente(models.Model):
     class TipoAfilliacion(models.TextChoices):
         Cedula = "CC"
@@ -47,6 +35,16 @@ class HistoriaClinica(models.Model):
     epicrisis = models.TextField(null = False, blank = False)
     dia_creado = models.DateField(null = False, blank = False)
     dia_modificado = models.DateField(null = False, blank = False)
-    medico_encargado = models.ForeignKey(Usuario, on_delete=models.CASCADE, null = False, blank = False)
+    medico_encargado = models.CharField(max_length=300)
     motivo_actualizacion = models.TextField(null = False, blank =False)
     firma = models.ImageField(upload_to = "firmas")
+
+class Usuario(AbstractUser):
+    class Cargos(models.TextChoices):
+        Medico = "Medico"
+        Investigador = "Investigador"
+        Administrador = "Administrador"
+        Paciente = "Paciente"
+        Secretaria = "Secretaria"
+    cargo = models.CharField(max_length=20, choices=Cargos.choices, default = Cargos.Paciente)
+    historia_id = models.ForeignKey(HistoriaClinica,on_delete=models.CASCADE, null=True, blank=True)

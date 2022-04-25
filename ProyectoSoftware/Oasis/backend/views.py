@@ -13,14 +13,33 @@ from datetime import date
 import json
 
 def permisos(user_id,cargos):
-    usuario = Usuario.objects.get(pk=user_id)
-    passCheck = False
-    for cargo in cargos:
-        passCheck = passCheck or cargo == usuario.cargo
-    return passCheck
+    try:
+        usuario = Usuario.objects.get(pk=user_id)
+        passCheck = False
+        for cargo in cargos:
+            passCheck = passCheck or cargo == usuario.cargo
+        return passCheck
+    except:
+        return False
+
+def conseguir_barra_de_navegacion(user_id):
+    try:
+        usuario = Usuario.objects.get(pk=user_id)
+        barra_navegacion = 0
+        if permisos(user_id,[Usuario.Cargos.Medico, Usuario.Cargos.Secretaria]):
+            barra_navegacion = 1
+        if permisos(user_id,[Usuario.Cargos.Investigador]):
+            barra_navegacion = 2
+        if permisos(user_id,[Usuario.Cargos.Paciente]):
+            barra_navegacion = 3
+        return barra_navegacion
+    except:
+        return 4
 
 def home(request):
-    return render(request, 'home.html')
+    barra_navegacion = conseguir_barra_de_navegacion(request.user.id)
+    print(barra_navegacion, flush=True)
+    return render(request, 'home.html', {'barra_navegacion': barra_navegacion})
 
 def inicio(request):
     return render(request, 'home.html')
@@ -57,7 +76,37 @@ def tabla_historias(request):
             historias = HistoriaClinica.objects.filter(**kwargs)
     else:
         historias = HistoriaClinica.objects.all()
-    return render(request, 'historias/tabla.html', {'historias': historias})
+    barra_navegacion = conseguir_barra_de_navegacion(request.user.id)
+    return render(request, 'historias/tabla.html', {'historias': historias, 'barra_navegacion': barra_navegacion})
+
+def ver_informacion_investigador(request):
+    buscar = request.GET
+    if len(buscar) > 0:
+        kwargs = {}
+        if buscar.get('edad', 0) != "":
+            kwargs['paciente__edad'] = int(buscar.get('edad', 0))
+        if buscar.get('raza', 0) != "":
+            kwargs['paciente__raza'] = buscar.get('raza', 0)
+        if buscar.get('etnicidad', 0) != "":
+            kwargs['paciente__etnicidad__contains'] = buscar.get('etnicidad', 0)
+        if buscar.get('historia_clinica', 0) != "":
+            numero_historias = len(HistoriaClinica.objects.filter(Q(motivo_de_consulta__contains=buscar.get('historia_clinica', 0)) |
+                                                        Q(enfermedad_actual__contains=buscar.get('historia_clinica', 0)) |
+                                                        Q(antecedentes_morbidos__contains=buscar.get('historia_clinica', 0)) |
+                                                        Q(antecedentes_ginecoobstétricos__contains=buscar.get('historia_clinica', 0)) | 
+                                                        Q(medicamentos__contains=buscar.get('historia_clinica', 0)) |
+                                                        Q(alergias__contains=buscar.get('historia_clinica', 0)) |
+                                                        Q(antecedentes_sociales_personales__contains=buscar.get('historia_clinica', 0)) |
+                                                        Q(inmunizaciones__contains=buscar.get('historia_clinica', 0)) |
+                                                        Q(revision_por_sistemas__contains=buscar.get('historia_clinica', 0)) |
+                                                        Q(epicrisis__contains=buscar.get('historia_clinica', 0)),**kwargs))
+        else:
+            numero_historias = len(HistoriaClinica.objects.filter(**kwargs))
+    else:
+        numero_historias = len(HistoriaClinica.objects.all())
+    barra_navegacion = conseguir_barra_de_navegacion(request.user.id)
+    return render(request, 'historias/busqueda_investigador.html', {'numero_historias': numero_historias, 'barra_navegacion': barra_navegacion})
+
 
 def actualizar_o_crear_paciente(post, crear):
     paciente =  InformacionPaciente(no_afiliacion=post.get('no_afiliacion',0)) if crear else InformacionPaciente.objects.get(no_afiliacion=post.get('no_afiliacion',0))
@@ -93,7 +142,7 @@ def actualizar_o_crear_historia_clinica(post, ID , paciente, user_id):
 
 def ver_historia(request, ID):
     if request.method == 'POST':
-        if not permisos(request.user.id,[Usuario.Cargos.Administrador, Usuario.Cargos.Medico, Usuario.Cargos.Secretaria]):
+        if permisos(request.user.id,[Usuario.Cargos.Investigador, Usuario.Cargos.Paciente]):
             messages.error(request, "No tienes acceso a esta función")
             return redirect('/')
         post = request.POST
@@ -116,26 +165,21 @@ def ver_historia(request, ID):
     if permisos(request.user.id,[Usuario.Cargos.Investigador]):
         messages.error(request, "No tienes acceso a esta función")
         return redirect('/')
-    
     cargo = 0
     if permisos(request.user.id,[Usuario.Cargos.Secretaria]):
         cargo = 1
     if permisos(request.user.id,[Usuario.Cargos.Paciente]):
         cargo = 2
-
-    # if permisos(request.user.id,[Usuario.Cargos.Paciente]):
-    #     usuario = Usuario.objects.get(pk=request.user.id)
-    #     if usuario.historia == ID:
-    #         historia = get_object_or_404(HistoriaClinica, pk=ID)
-    #         return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza, 'cargo': cargo})
-    #     else:
-    #         messages.error(request, "No tienes acceso a esta función")
-    #         return redirect('/')
+    barra_navegacion = conseguir_barra_de_navegacion(request.user.id)
+    if permisos(request.user.id,[Usuario.Cargos.Paciente]):
+        usuario = Usuario.objects.get(pk=request.user.id)
+        historia = get_object_or_404(HistoriaClinica, pk=usuario.historia_id.pk)
+        return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza, 'cargo': cargo, 'barra_navegacion': barra_navegacion})
     historia = get_object_or_404(HistoriaClinica, pk=ID)
-    return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza, 'cargo': cargo})
+    return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza, 'cargo': cargo, 'barra_navegacion': barra_navegacion})
 
 def registrar(request):
-    if not permisos(request.user.id,[Usuario.Cargos.Administrador]):
+    if permisos(request.user.id,[Usuario.Cargos.Medico, Usuario.Cargos.Secretaria, Usuario.Cargos.Investigador, Usuario.Cargos.Paciente]):
         messages.error(request, "No tienes acceso a esta función")
         return redirect('/')
     data = {
@@ -147,14 +191,18 @@ def registrar(request):
             formulario.save()
             user = authenticate(username = formulario.cleaned_data['username'], password = formulario.cleaned_data['password1'])
             login(request, user)
+            usuario = Usuario.objects.get(pk=request.user.id)
+            print("HIIIII",usuario.cargo, flush=True)
+            if usuario.cargo == Usuario.Cargos.Paciente:
+                return redirect('/historias/' + usuario.historia_id)
             messages.success(request,"Se ha registrado correctamente")
             return redirect ('/home')
         data["form"] = formulario
-
-    return render(request, 'registration/registro.html', data)
+    barra_navegacion = conseguir_barra_de_navegacion(request.user.id)
+    return render(request, 'registration/registro.html', data, {'barra_navegacion': barra_navegacion})
 
 def crear_historia(request):
-    if not permisos(request.user.id,[Usuario.Cargos.Administrador, Usuario.Cargos.Medico, Usuario.Cargos.Secretaria]):
+    if permisos(request.user.id,[Usuario.Cargos.Investigador, Usuario.Cargos.Paciente]):
         messages.error(request, "No tienes acceso a esta función")
         return redirect('/')
 
@@ -171,15 +219,34 @@ def crear_historia(request):
             historia = actualizar_o_crear_historia_clinica(post, None, paciente, request.user.id)
             historia.dia_creado = date.today()
             historia.save()
+            usuario = Usuario.objects.create(
+                username=paciente.no_afiliacion,
+                email=paciente.email,
+                cargo=Usuario.Cargos.Paciente,
+                first_name=paciente.nombre,
+                historia_id=historia
+            )
+            usuario.set_password(paciente.no_afiliacion)
+            usuario.save()
             messages.success(request, "Historia creada")
         except:
             messages.error(request, "Error creando historia")
         return redirect("/historias")
+    cargo = 0
+    if permisos(request.user.id,[Usuario.Cargos.Secretaria]):
+        cargo = 1
+    if permisos(request.user.id,[Usuario.Cargos.Paciente]):
+        cargo = 2
     historia = {'pk': 'crear'}
-    return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza})
+    barra_navegacion = conseguir_barra_de_navegacion(request.user.id)
+    return render(request, 'historias/historia.html', {'historia': historia, 'tipos' : InformacionPaciente.TipoAfilliacion,'razas' : InformacionPaciente.Raza, 'cargo': cargo,'barra_navegacion': barra_navegacion})
 
 def buscar_historia(request):
     if permisos(request.user.id,[Usuario.Cargos.Paciente]):
         messages.error(request, "No tienes acceso a esta función")
         return redirect('/')
-    return render(request, "historias/buscar.html", {'tipos' : InformacionPaciente.TipoAfilliacion})
+    cargo = 0
+    if permisos(request.user.id,[Usuario.Cargos.Investigador]):
+        cargo = 1
+    barra_navegacion = conseguir_barra_de_navegacion(request.user.id)
+    return render(request, "historias/buscar.html", {'tipos' : InformacionPaciente.TipoAfilliacion, 'razas' : InformacionPaciente.Raza, 'barra_navegacion': barra_navegacion, 'cargo': cargo})
