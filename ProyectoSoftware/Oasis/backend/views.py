@@ -11,6 +11,8 @@ from django.http import HttpResponse
 from backend.models import HistoriaClinica, InformacionPaciente, Usuario
 from datetime import date
 import json
+import csv
+import datetime
 
 def permisos(user_id,cargos):
     try:
@@ -250,3 +252,22 @@ def buscar_historia(request):
         cargo = 1
     barra_navegacion = conseguir_barra_de_navegacion(request.user.id)
     return render(request, "historias/buscar.html", {'tipos' : InformacionPaciente.TipoAfilliacion, 'razas' : InformacionPaciente.Raza, 'barra_navegacion': barra_navegacion, 'cargo': cargo})
+
+def exportar_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename = HistoriaClinica'+ str(datetime.datetime.now())+'.csv'
+    writer = csv.writer(response)
+    keys = ["no_afiliacion","nombre","tipo_afiliacion","aseguradora","edad","raza","etnicidad","email","telefono",
+    "motivo_de_consulta","enfermedad_actual","antecedentes_morbidos","antecedentes_ginecoobstétricos","medicamentos",
+    "alergias","antecedentes_sociales_personales","antecedentes_familiares","inmunizaciones","revision_por_sistemas","epicrisis"]
+    writer.writerow(keys)
+    historias = HistoriaClinica.objects.all()
+
+    for historia in historias:
+        paciente = InformacionPaciente.objects.get(id=historia.paciente)
+        writer.writerow([paciente.no_afiliacion, paciente.nombre, paciente.tipo_afiliacion, paciente.aseguradora , paciente.edad, paciente.raza, 
+        paciente.etnicidad, paciente.email, paciente.telefono, historia.motivo_de_consulta, historia.enfermedad_actual, historia.antecedentes_morbidos,
+        historia.antecedentes_ginecoobstétricos, historia.medicamentos, historia.alergias, historia.antecedentes_sociales_personales, historia.antecedentes_familiares,
+        historia.inmunizaciones, historia.revision_por_sistemas, historia.epicrisis])
+
+    return response

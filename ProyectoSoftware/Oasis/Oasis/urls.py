@@ -28,6 +28,7 @@ urlpatterns = [
     path('historias/buscar/', backendViews.buscar_historia),
     path('historias/crear/', backendViews.crear_historia),
     path('registro/', backendViews.registrar, name ='registro'),
+    path('exportar/', backendViews.exportar_csv, name ='exportar'),
     path('historias/<int:ID>/', backendViews.ver_historia, name="historia_details"),
     path('informacion_investigador/', backendViews.ver_informacion_investigador, name="historia_details")
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

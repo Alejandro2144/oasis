@@ -9,6 +9,9 @@
             <p>{{ message }}</p>
         </div>
         {% endfor %}
+
+        <a href="{% url 'exportar' %}" class="btn btn-secondary">Exportar</a>
+        
       </div>
     </div>
   {% endif %}
