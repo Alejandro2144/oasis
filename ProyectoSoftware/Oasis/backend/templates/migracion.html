@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block content %}
+
+<form action="/migraciones/" method="POST" enctype="multipart/form-data">{% csrf_token %}
+    <br>
+    <div class="container">
+        <div class="p-5 mb-4 bg-light rounded-3">
+            <h1>Migración</h1>
+            <input type="file" accept=".csv" name="archivo" required>
+            <br>
+
+            <input type="submit" value="Migrar">
+        </div>
+    </div>
+</form>
+
+{% endblock %}

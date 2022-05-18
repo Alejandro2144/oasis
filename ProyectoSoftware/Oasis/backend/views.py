@@ -1,4 +1,3 @@
-import email
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
@@ -271,3 +270,45 @@ def exportar_csv(request):
         historia.inmunizaciones, historia.revision_por_sistemas, historia.epicrisis])
 
     return response
+def migrar_informacion(request):
+    if request.method == 'POST':
+        try:
+            file = request.FILES.get('archivo').read().decode()
+            lines = file.split("\n")
+            first_line = True
+            keys = ["no_afiliacion","nombre","tipo_afiliacion","aseguradora","edad","raza","etnicidad","email","telefono","motivo_de_consulta","enfermedad_actual","antecedentes_morbidos","antecedentes_ginecoobstétricos","medicamentos","alergias","antecedentes_sociales_personales","antecedentes_familiares","inmunizaciones","revision_por_sistemas","epicrisis"]
+            csvFile = []
+            for line in lines:
+                if first_line:
+                    pass
+                dic = {}
+                values = line.split(",")
+                for i in range(len(keys)):
+                    dic[keys[i]] = values[i]
+                csvFile.append(dic.copy())
+            first_line = True
+            for rows in csvFile:
+                if first_line:
+                    first_line = False
+                    continue
+                paciente = actualizar_o_crear_paciente(rows, True)
+                paciente.save()
+                historia = actualizar_o_crear_historia_clinica(rows, None, paciente, request.user.id)
+                historia.dia_creado = date.today()
+                historia.save()
+                usuario = Usuario.objects.create(
+                    username=paciente.no_afiliacion,
+                    email=paciente.email,
+                    cargo=Usuario.Cargos.Paciente,
+                    first_name=paciente.nombre,
+                    historia_id=historia
+                )
+                usuario.set_password(paciente.no_afiliacion)
+                usuario.save()
+            messages.success(request, "Migración exitosa")
+            return redirect('/')
+        except:
+            messages.error(request, "Migración fallida")
+            return redirect('/')
+    barra_navegacion = conseguir_barra_de_navegacion(request.user.id)
+    return render(request, "migracion.html", {'barra_navegacion': barra_navegacion})
