@@ -263,7 +263,7 @@ def exportar_csv(request):
     historias = HistoriaClinica.objects.all()
 
     for historia in historias:
-        paciente = InformacionPaciente.objects.get(id=historia.paciente)
+        paciente = historia.paciente
         writer.writerow([paciente.no_afiliacion, paciente.nombre, paciente.tipo_afiliacion, paciente.aseguradora , paciente.edad, paciente.raza, 
         paciente.etnicidad, paciente.email, paciente.telefono, historia.motivo_de_consulta, historia.enfermedad_actual, historia.antecedentes_morbidos,
         historia.antecedentes_ginecoobstétricos, historia.medicamentos, historia.alergias, historia.antecedentes_sociales_personales, historia.antecedentes_familiares,
